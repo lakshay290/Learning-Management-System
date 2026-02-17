@@ -56,7 +56,7 @@ final_lms_project/
 
 ⚙️ Installation & Setup
 1️⃣ Clone the Repository
-git clone https://github.com/your-username/lms-project.git
+git clone https://github.com/lakshay290/Learning-Management-System
 cd lms-project
 
 2️⃣ Create Virtual Environment
