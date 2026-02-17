@@ -1,0 +1,86 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block content %}
+
+<div class="container-fluid">
+    <div class="row vh-100">
+
+        <!-- LEFT SIDE -->
+        <div class="col-md-6 left-panel d-flex flex-column justify-content-center align-items-center text-center">
+
+            <h1 class="lms-title text-white">LMS</h1>
+            <h3 class="text-white mt-3">Learning Management System</h3>
+
+            <div class="rank-box mt-4 text-white">
+                <h2>Empowering Education</h2>
+                <p>Modern • Secure • Smart</p>
+            </div>
+
+        </div>
+
+
+        <!-- RIGHT SIDE -->
+        <div class="col-md-6 d-flex justify-content-center align-items-center">
+
+            <div class="login-card p-5 text-center shadow">
+
+                <h3 class="fw-bold mb-4">Welcome to LMS</h3>
+
+                {% if user.is_authenticated %}
+
+                    <p class="mb-3">
+                        Logged in as <strong>{{ user.username }}</strong>
+                    </p>
+
+                    <!-- VIEW ALL COURSES -->
+                    <a href="{% url 'course_list' %}"
+                       class="btn btn-success w-100 mb-2">
+                        View All Courses
+                    </a>
+
+                    <!-- STUDENT OPTIONS -->
+                    {% if not user.is_teacher %}
+                        <a href="{% url 'my_courses' %}"
+                           class="btn btn-info w-100 mb-2">
+                            My Enrolled Courses
+                        </a>
+                    {% endif %}
+
+                    <!-- TEACHER OPTIONS -->
+                    {% if user.is_teacher %}
+                        <a href="{% url 'create_course' %}"
+                           class="btn btn-dark w-100 mb-2">
+                            Add New Course
+                        </a>
+                    {% endif %}
+
+                    <!-- LOGOUT -->
+                    <a href="{% url 'logout' %}"
+                       class="btn btn-danger w-100">
+                        Logout
+                    </a>
+
+                {% else %}
+
+                    <!-- NOT LOGGED IN -->
+                    <a href="{% url 'register' %}"
+                       class="btn btn-primary w-100 mb-2">
+                        Register
+                    </a>
+
+                    <a href="{% url 'login' %}"
+                       class="btn btn-warning w-100">
+                        Login
+                    </a>
+
+                {% endif %}
+
+            </div>
+
+        </div>
+
+    </div>
+</div>
+
+{% endblock %}
