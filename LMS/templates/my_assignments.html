@@ -1,0 +1,71 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<div class="container mt-5">
+    <h2 class="mb-4 text-center">My Assignments</h2>
+
+    {% if assignments_by_course %}
+        {% for item in assignments_by_course %}
+        <div class="mb-5">
+            <h4 class="mb-3" style="border-bottom: 3px solid #667eea; padding-bottom: 10px;">
+                {{ item.course.title }}
+            </h4>
+
+            <div class="row">
+                {% for submission in item.assignments %}
+                <div class="col-md-6 mb-4">
+                    <div class="card shadow p-4">
+                        <h5 class="card-title">{{ submission.assignment.title }}</h5>
+                        <p class="card-text">{{ submission.assignment.description }}</p>
+
+                        <div class="assignment-info mb-3">
+                            <p class="mb-1">
+                                <strong>Points:</strong> {{ submission.assignment.points }}
+                            </p>
+                            <p class="mb-1">
+                                <strong>Due Date:</strong> 
+                                <span class="badge bg-danger">{{ submission.assignment.due_date|date:"M d, Y H:i" }}</span>
+                            </p>
+                            <p class="mb-1">
+                                <strong>Status:</strong>
+                                <span class="badge bg-{% if submission.status == 'submitted' %}warning{% elif submission.status == 'graded' %}success{% elif submission.status == 'draft' %}secondary{% else %}info{% endif %}">
+                                    {{ submission.get_status_display }}
+                                </span>
+                            </p>
+                            {% if submission.grade %}
+                            <p class="mb-0">
+                                <strong>Grade:</strong>
+                                <span class="badge bg-primary">{{ submission.grade }}/100</span>
+                            </p>
+                            {% endif %}
+                        </div>
+
+                        <a href="{% url 'assignment_submit' submission.assignment.id %}"
+                           class="btn btn-primary w-100 mb-2">
+                            {% if submission.status == 'draft' %}
+                                Submit Assignment
+                            {% else %}
+                                Update Submission
+                            {% endif %}
+                        </a>
+
+                        <a href="{% url 'view_submission_detail' submission.id %}"
+                           class="btn btn-info w-100">
+                            View Details
+                        </a>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+        {% endfor %}
+    {% else %}
+        <div class="alert alert-info text-center">
+            <h5>No assignments assigned yet</h5>
+            <p>Your instructors will assign assignments to you. Check back soon!</p>
+        </div>
+    {% endif %}
+</div>
+
+{% endblock %}

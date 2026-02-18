@@ -1,0 +1,96 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <h2 class="mb-4">Enroll Students to: <strong>{{ course.title }}</strong></h2>
+
+            <div class="card shadow p-4 mb-4">
+                <h5>Course Details</h5>
+                <p><strong>Title:</strong> {{ course.title }}</p>
+                <p class="mb-0">
+                    <strong>Description:</strong> {{ course.description }}
+                </p>
+            </div>
+
+            <!-- Enroll New Student -->
+            {% if available_students %}
+            <div class="card shadow p-4 mb-4">
+                <h5 class="mb-3">Enroll New Student</h5>
+                <form method="post">
+                    {% csrf_token %}
+                    <div class="input-group">
+                        <select class="form-select" name="student_id" required>
+                            <option value="">-- Select a Student --</option>
+                            {% for student in available_students %}
+                            <option value="{{ student.id }}">
+                                {{ student.username }} ({{ student.email }})
+                            </option>
+                            {% endfor %}
+                        </select>
+                        <button class="btn btn-primary" type="submit">Enroll</button>
+                    </div>
+                </form>
+            </div>
+            {% else %}
+            <div class="alert alert-info">
+                All registered students are already enrolled in this course.
+            </div>
+            {% endif %}
+
+            <!-- Currently Enrolled Students -->
+            <div class="card shadow p-4">
+                <h5 class="mb-3">Enrolled Students ({{ current_enrollments.count }})</h5>
+                
+                {% if current_enrollments %}
+                <div class="table-responsive">
+                    <table class="table table-hover">
+                        <thead class="table-dark">
+                            <tr>
+                                <th>Student</th>
+                                <th>Email</th>
+                                <th>Enrolled Date</th>
+                                <th>Completed</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for enrollment in current_enrollments %}
+                            <tr>
+                                <td>{{ enrollment.student.username }}</td>
+                                <td>{{ enrollment.student.email }}</td>
+                                <td>{{ enrollment.enrolled_at|date:"M d, Y H:i" }}</td>
+                                <td>
+                                    {% if enrollment.completed %}
+                                        <span class="badge bg-success">Yes</span>
+                                    {% else %}
+                                        <span class="badge bg-warning">No</span>
+                                    {% endif %}
+                                </td>
+                                <td>
+                                    <a href="{% url 'remove_student_from_course' enrollment.id %}"
+                                       class="btn btn-sm btn-danger"
+                                       onclick="return confirm('Remove this student from course?')">
+                                        Remove
+                                    </a>
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+                {% else %}
+                <p class="text-muted">No students enrolled yet.</p>
+                {% endif %}
+            </div>
+
+            <div class="mt-4">
+                <a href="{% url 'manage_assignments' %}" class="btn btn-secondary">Back to Management</a>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock %}

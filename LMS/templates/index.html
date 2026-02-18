@@ -1,0 +1,122 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block content %}
+
+<div class="container-fluid">
+    <div class="row vh-100">
+
+        <!-- LEFT SIDE -->
+        <div class="col-md-6 left-panel d-flex flex-column justify-content-center align-items-center text-center">
+
+            <h1 class="lms-title text-white" style="font-size: 72px; margin-bottom: 10px;">LMS</h1>
+            <h3 class="text-white mt-2">Learning Management System</h3>
+
+            <div class="rank-box mt-5 text-white">
+                <h2 style="font-size: 28px; margin-bottom: 10px;">Empowering Education</h2>
+                <p style="font-size: 16px; margin: 0;">Modern • Secure • Smart</p>
+            </div>
+
+            <div class="mt-5" style="max-width: 300px;">
+                <h5 class="text-white">Features:</h5>
+                <ul class="text-white" style="font-size: 14px; text-align: left;">
+                    <li>Role-based access control</li>
+                    <li>Course management</li>
+                    <li>Lesson planning</li>
+                    <li>Assignment tracking</li>
+                    <li>Advanced grading system</li>
+                    <li>JWT authentication</li>
+                </ul>
+            </div>
+
+        </div>
+
+
+        <!-- RIGHT SIDE -->
+        <div class="col-md-6 d-flex justify-content-center align-items-center" style="background: #f8f9fa;">
+
+            <div class="login-card p-5 text-center shadow" style="width: 85%; max-width: 450px;">
+
+                {% if user.is_authenticated %}
+                    <h3 class="fw-bold mb-4">Welcome, {{ user.username }}!</h3>
+
+                    <div class="alert alert-info" role="alert">
+                        <strong>Role:</strong> {{ user.get_role_display }}
+                    </div>
+
+                    <!-- VIEW ALL COURSES -->
+                    <a href="{% url 'course_list' %}"
+                       class="btn btn-success w-100 mb-2">
+                        <i class="fas fa-book"></i> View All Courses
+                    </a>
+
+                    <!-- STUDENT OPTIONS -->
+                    {% if not user.is_teacher %}
+                        <a href="{% url 'my_courses' %}"
+                           class="btn btn-info w-100 mb-2">
+                            <i class="fas fa-graduation-cap"></i> My Enrolled Courses
+                        </a>
+                    {% endif %}
+
+                    <!-- TEACHER OPTIONS -->
+                    {% if user.is_teacher %}
+                        <a href="{% url 'create_course' %}"
+                           class="btn btn-dark w-100 mb-2">
+                            <i class="fas fa-plus"></i> Add New Course
+                        </a>
+                    {% endif %}
+
+                    <!-- API DOCUMENTATION -->
+                    <a href="/api/docs/"
+                       class="btn btn-primary w-100 mb-2">
+                        <i class="fas fa-code"></i> API Documentation
+                    </a>
+
+                    <!-- LOGOUT -->
+                    <a href="{% url 'logout' %}"
+                       class="btn btn-danger w-100">
+                        <i class="fas fa-sign-out-alt"></i> Logout
+                    </a>
+
+                {% else %}
+
+                    <!-- NOT LOGGED IN -->
+                    <h3 class="fw-bold mb-4">Welcome to LMS</h3>
+                    <p class="text-muted mb-4">A modern learning management system with role-based access control.</p>
+
+                    <p class="mb-3">
+                        <small class="text-muted">New to LMS? Register to get started.</small>
+                    </p>
+
+                    <a href="{% url 'register' %}"
+                       class="btn btn-primary w-100 mb-2">
+                        <i class="fas fa-user-plus"></i> Register
+                    </a>
+
+                    <a href="{% url 'login' %}"
+                       class="btn btn-warning w-100 mb-3">
+                        <i class="fas fa-sign-in-alt"></i> Login
+                    </a>
+
+                    <hr>
+
+                    <p class="text-muted" style="font-size: 12px;">
+                        Test Credentials:<br>
+                        Admin: admin / password<br>
+                        Instructor: teacher / password<br>
+                        Student: student / password
+                    </p>
+
+                {% endif %}
+
+            </div>
+
+        </div>
+
+    </div>
+</div>
+
+<!-- Font Awesome for Icons -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+
+{% endblock %}

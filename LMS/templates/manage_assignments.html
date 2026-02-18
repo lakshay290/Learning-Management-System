@@ -1,0 +1,109 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<div class="container mt-5">
+    <h2 class="mb-4 text-center">Manage Assignments</h2>
+
+    <div class="row">
+        <div class="col-md-12">
+            <div class="card shadow p-4 mb-4">
+                <h5 class="card-title">Your Courses & Assignments</h5>
+                <p class="text-muted">Manage assignments and enrollments within your courses</p>
+            </div>
+
+            {% if courses %}
+                <div class="accordion mb-5" id="assignmentAccordion">
+                    {% for course in courses %}
+                    <div class="accordion-item">
+                        <h2 class="accordion-header" id="heading{{ course.id }}">
+                            <button class="accordion-button" type="button" data-bs-toggle="collapse" 
+                                    data-bs-target="#collapse{{ course.id }}" 
+                                    aria-expanded="true" aria-controls="collapse{{ course.id }}">
+                                <div class="w-100">
+                                    <strong>{{ course.title }}</strong>
+                                    <br>
+                                    <small class="text-muted">{{ course.description }}</small>
+                                </div>
+                            </button>
+                        </h2>
+                        <div id="collapse{{ course.id }}" class="accordion-collapse collapse" 
+                             aria-labelledby="heading{{ course.id }}" data-bs-parent="#assignmentAccordion">
+                            <div class="accordion-body p-4">
+                                <!-- Assignment Section -->
+                                <h6 class="mb-3">
+                                    <i class="fas fa-tasks"></i> Assignments
+                                </h6>
+                                {% if course.assignments.all %}
+                                    <div class="table-responsive mb-4">
+                                        <table class="table table-sm table-hover">
+                                            <thead class="table-light">
+                                                <tr>
+                                                    <th>Assignment</th>
+                                                    <th>Due Date</th>
+                                                    <th>Points</th>
+                                                    <th>Action</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                {% for assignment in course.assignments.all %}
+                                                <tr>
+                                                    <td><strong>{{ assignment.title }}</strong></td>
+                                                    <td>
+                                                        {% if assignment.due_date %}
+                                                            {{ assignment.due_date|date:"M d, Y" }}
+                                                        {% else %}
+                                                            <span class="text-muted">No due date</span>
+                                                        {% endif %}
+                                                    </td>
+                                                    <td><span class="badge bg-info">{{ assignment.points }}</span></td>
+                                                    <td>
+                                                        <a href="{% url 'assign_student_to_assignment' assignment.id %}"
+                                                           class="btn btn-sm btn-primary">
+                                                            <i class="fas fa-user-plus"></i> Assign
+                                                        </a>
+                                                        <a href="{% url 'delete_assignment' assignment.id %}"
+                                                           class="btn btn-sm btn-danger"
+                                                           onclick="return confirm('Are you sure you want to delete this assignment?');">
+                                                            <i class="fas fa-trash"></i> Delete
+                                                        </a>
+                                                    </td>
+                                                </tr>
+                                                {% endfor %}
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                {% else %}
+                                    <div class="alert alert-warning alert-sm mb-4">
+                                        No assignments created for this course yet.
+                                    </div>
+                                    <a href="{% url 'create_assignment' course.id %}"
+                                       class="btn btn-sm btn-success mb-4">
+                                        <i class="fas fa-plus"></i> Create New Assignment
+                                    </a>
+                                {% endif %}
+
+                                <!-- Enrollment Section -->
+                                <h6 class="mb-3">
+                                    <i class="fas fa-users"></i> Manage Student Enrollments
+                                </h6>
+                                <a href="{% url 'enroll_student_to_course' course.id %}"
+                                   class="btn btn-success btn-sm">
+                                    <i class="fas fa-user-check"></i> Manage Students
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+            {% else %}
+                <div class="alert alert-info">
+                    You haven't created any courses yet. 
+                    <a href="{% url 'create_course' %}">Create a course</a> to get started.
+                </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+
+{% endblock %}

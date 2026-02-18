@@ -1,0 +1,74 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <h2 class="mb-4">Grade Submission</h2>
+
+            <div class="card shadow p-4 mb-4">
+                <h5>Student Submission</h5>
+                <p class="mb-2">
+                    <strong>Student:</strong> {{ submission.student.username }}
+                </p>
+                <p class="mb-2">
+                    <strong>Assignment:</strong> {{ submission.assignment.title }}
+                </p>
+                <p class="mb-2">
+                    <strong>Submitted:</strong> {{ submission.submitted_at|date:"M d, Y H:i" }}
+                </p>
+                <hr>
+                <div class="submission-content bg-light p-3" style="border-radius: 8px; max-height: 400px; overflow-y: auto;">
+                    {{ submission.submission_text|linebreaks }}
+                </div>
+            </div>
+
+            <div class="card shadow p-4">
+                <h5 class="mb-4">Grade & Feedback</h5>
+                <form method="post">
+                    {% csrf_token %}
+
+                    <div class="mb-3">
+                        <label for="grade" class="form-label fw-semibold">Grade (0-100)</label>
+                        <div class="input-group">
+                            <input type="number" 
+                                   class="form-control" 
+                                   id="grade" 
+                                   name="grade" 
+                                   min="0" 
+                                   max="100"
+                                   value="{{ submission.grade|default:'' }}"
+                                   required>
+                            <span class="input-group-text">/100</span>
+                        </div>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="feedback" class="form-label fw-semibold">Feedback</label>
+                        <textarea class="form-control" 
+                                  id="feedback" 
+                                  name="feedback" 
+                                  rows="6"
+                                  placeholder="Enter your feedback here...">{{ submission.feedback }}</textarea>
+                    </div>
+
+                    {% if error %}
+                    <div class="alert alert-danger" role="alert">
+                        {{ error }}
+                    </div>
+                    {% endif %}
+
+                    <button type="submit" class="btn btn-success w-100 mb-2">
+                        Submit Grades
+                    </button>
+                    <a href="{% url 'view_submissions' submission.assignment.id %}" class="btn btn-secondary w-100">
+                        Back to Submissions
+                    </a>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock %}

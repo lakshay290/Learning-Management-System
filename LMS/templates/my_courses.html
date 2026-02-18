@@ -1,0 +1,55 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<div class="container mt-5">
+    <div class="row mb-4">
+        <div class="col-md-12">
+            <h2 class="mb-4 text-center">My Enrolled Courses</h2>
+            <a href="{% url 'my_assignments' %}" class="btn btn-info mb-3">
+                View My Assignments
+            </a>
+        </div>
+    </div>
+
+    {% for enroll in enrollments %}
+        <div class="card p-3 mb-3 shadow">
+            <h5>{{ enroll.course.title }}</h5>
+            <p>{{ enroll.course.description }}</p>
+
+            <div class="mb-3">
+                <strong>Assignments:</strong>
+                {% with assignments=enroll.course.assignments.all %}
+                    {% if assignments %}
+                        <ul class="list-unstyled mt-2">
+                            {% for assignment in assignments %}
+                            <li class="mb-2">
+                                <a href="{% url 'assignment_submit' assignment.id %}" class="text-decoration-none">
+                                    • {{ assignment.title }} 
+                                    <span class="badge bg-danger">{{ assignment.due_date|date:"M d" }}</span>
+                                </a>
+                            </li>
+                            {% endfor %}
+                        </ul>
+                    {% else %}
+                        <p class="text-muted ms-2">No assignments yet</p>
+                    {% endif %}
+                {% endwith %}
+            </div>
+
+            {% if not enroll.completed %}
+                <a href="{% url 'complete' enroll.id %}"
+                   class="btn btn-success">
+                    Mark as Complete
+                </a>
+            {% else %}
+                <span class="badge bg-success">Completed</span>
+            {% endif %}
+        </div>
+    {% empty %}
+        <p>No enrolled courses.</p>
+    {% endfor %}
+
+</div>
+
+{% endblock %}

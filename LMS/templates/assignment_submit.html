@@ -1,0 +1,59 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <h2 class="mb-4">Submit Assignment: {{ assignment.title }}</h2>
+
+            <div class="card shadow p-4 mb-4">
+                <h5>Assignment Details</h5>
+                <p>{{ assignment.description }}</p>
+                <hr>
+                <p class="mb-0">
+                    <strong>Due Date:</strong> 
+                    <span class="text-danger">{{ assignment.due_date|date:"M d, Y H:i" }}</span>
+                </p>
+                <p class="mb-0">
+                    <strong>Points:</strong> {{ assignment.points }}
+                </p>
+            </div>
+
+            <div class="card shadow p-4">
+                <form method="post">
+                    {% csrf_token %}
+
+                    <div class="mb-3">
+                        <label for="submission_text" class="form-label fw-semibold">Your Submission</label>
+                        <textarea class="form-control" 
+                                  id="submission_text" 
+                                  name="submission_text" 
+                                  rows="10"
+                                  placeholder="Enter your assignment submission here..."
+                                  required></textarea>
+                    </div>
+
+                    {% if submission %}
+                        <div class="alert alert-info" role="alert">
+                            <strong>Already Submitted</strong><br>
+                            Status: <span class="badge bg-secondary">{{ submission.status }}</span><br>
+                            {% if submission.grade %}
+                                Grade: <span class="badge bg-success">{{ submission.grade }}/100</span>
+                            {% endif %}
+                        </div>
+                    {% endif %}
+
+                    <button type="submit" class="btn btn-success w-100 mb-2">
+                        {% if submission %}Update Submission{% else %}Submit Assignment{% endif %}
+                    </button>
+                    <a href="{% url 'my_courses' %}" class="btn btn-secondary w-100">
+                        Back to Courses
+                    </a>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock %}

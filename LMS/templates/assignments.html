@@ -1,0 +1,51 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<div class="container mt-5">
+    <h2 class="mb-4 text-center">Course Assignments</h2>
+
+    {% if assignments %}
+        <div class="row">
+            {% for assignment in assignments %}
+            <div class="col-md-6 mb-4">
+                <div class="card shadow p-4">
+                    <h5 class="card-title">{{ assignment.title }}</h5>
+                    <p class="card-text">{{ assignment.description }}</p>
+                    
+                    <div class="assignment-info mb-3">
+                        <p class="mb-1">
+                            <strong>Points:</strong> {{ assignment.points }}
+                        </p>
+                        <p class="mb-1">
+                            <strong>Due Date:</strong> 
+                            <span class="badge bg-danger">{{ assignment.due_date|date:"M d, Y H:i" }}</span>
+                        </p>
+                    </div>
+
+                    {% if user.is_authenticated and not user.is_teacher %}
+                        <a href="{% url 'assignment_submit' assignment.id %}"
+                           class="btn btn-primary w-100">
+                            Submit Assignment
+                        </a>
+                    {% elif user.is_teacher %}
+                        <a href="{% url 'view_submissions' assignment.id %}"
+                           class="btn btn-info w-100">
+                            View Submissions
+                        </a>
+                    {% else %}
+                        <a href="{% url 'login' %}"
+                           class="btn btn-warning w-100">
+                            Login to Submit
+                        </a>
+                    {% endif %}
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    {% else %}
+        <p class="text-center text-muted">No assignments available.</p>
+    {% endif %}
+</div>
+
+{% endblock %}

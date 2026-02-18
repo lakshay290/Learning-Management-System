@@ -1,0 +1,73 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <h2 class="mb-4">Submission Details</h2>
+
+            <div class="card shadow p-4 mb-4">
+                <h5>Assignment Info</h5>
+                <p class="mb-2">
+                    <strong>Title:</strong> {{ submission.assignment.title }}
+                </p>
+                <p class="mb-2">
+                    <strong>Course:</strong> {{ submission.assignment.course.title }}
+                </p>
+                <p class="mb-2">
+                    <strong>Points:</strong> {{ submission.assignment.points }}
+                </p>
+            </div>
+
+            <div class="card shadow p-4 mb-4">
+                <h5>Submission Info</h5>
+                <p class="mb-2">
+                    <strong>Student:</strong> {{ submission.student.username }}
+                </p>
+                <p class="mb-2">
+                    <strong>Status:</strong> 
+                    <span class="badge bg-{% if submission.status == 'graded' %}success{% elif submission.status == 'submitted' %}warning{% else %}secondary{% endif %}">
+                        {{ submission.get_status_display }}
+                    </span>
+                </p>
+                <p class="mb-2">
+                    <strong>Submitted:</strong> 
+                    {% if submission.submitted_at %}
+                        {{ submission.submitted_at|date:"M d, Y H:i" }}
+                    {% else %}
+                        <span class="text-muted">Draft</span>
+                    {% endif %}
+                </p>
+                {% if submission.grade %}
+                <p class="mb-0">
+                    <strong>Grade:</strong> 
+                    <span class="badge bg-success">{{ submission.grade }}/100</span>
+                </p>
+                {% endif %}
+            </div>
+
+            <div class="card shadow p-4 mb-4">
+                <h5>Submission Content</h5>
+                <div class="submission-content bg-light p-3" style="border-radius: 8px; min-height: 200px;">
+                    {{ submission.submission_text|linebreaks }}
+                </div>
+            </div>
+
+            {% if submission.feedback %}
+            <div class="card shadow p-4 mb-4 border-info">
+                <h5 class="text-info">Instructor Feedback</h5>
+                <div class="feedback-content bg-light p-3" style="border-radius: 8px;">
+                    {{ submission.feedback|linebreaks }}
+                </div>
+            </div>
+            {% endif %}
+
+            <a href="{% url 'my_courses' %}" class="btn btn-secondary w-100">
+                Back to My Courses
+            </a>
+        </div>
+    </div>
+</div>
+
+{% endblock %}
